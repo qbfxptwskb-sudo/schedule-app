@@ -6,225 +6,282 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Schedule">
-<title>Block Schedule</title>
+<meta name="apple-mobile-web-app-title" content="My Schedule">
+<title>My Schedule</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4f0;color:#1a1a18;min-height:100vh;padding-bottom:env(safe-area-inset-bottom)}
-.wrap{max-width:480px;margin:0 auto;padding:16px 12px}
-.day-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.day-nav{background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:14px;color:#1a1a18;-webkit-tap-highlight-color:transparent}
-.day-nav:active{background:#e8e6e0}
-.day-label{font-size:17px;font-weight:500;color:#1a1a18;flex:1;text-align:center}
-.legend{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
-.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#5f5e5a}
-.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.toolbar{display:flex;gap:6px;margin:10px 0 6px;flex-wrap:wrap}
-.btn{background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;padding:7px 12px;cursor:pointer;font-size:13px;color:#1a1a18;-webkit-tap-highlight-color:transparent}
-.btn:active{background:#e8e6e0}
-.btn.primary{border-color:#185fa5;color:#185fa5}
-.timeline{position:relative;padding-left:44px;margin-top:4px}
-.hour-row{position:relative;height:48px;border-top:0.5px solid #d3d1c7}
-.hour-row:last-child{border-bottom:0.5px solid #d3d1c7}
-.hour-label{position:absolute;left:-44px;top:-9px;font-size:11px;color:#888780;width:38px;text-align:right}
-.block{position:absolute;left:0;right:0;border-radius:6px;cursor:pointer;overflow:hidden;display:flex;align-items:center;padding:0 8px;font-size:12px;font-weight:500;-webkit-tap-highlight-color:transparent}
-.block-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.now-line{position:absolute;left:-44px;right:0;height:1.5px;background:#E24B4A;z-index:10;pointer-events:none}
-.now-dot{position:absolute;left:-44px;width:8px;height:8px;border-radius:50%;background:#E24B4A;top:-3.5px;z-index:11}
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;display:flex;align-items:flex-end;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
-.modal{background:#fff;border-radius:16px 16px 0 0;padding:20px 16px 28px;width:100%;max-width:480px}
-.modal-handle{width:36px;height:4px;background:#d3d1c7;border-radius:2px;margin:0 auto 16px}
-.modal h3{font-size:16px;font-weight:500;margin-bottom:14px;color:#1a1a18}
-.modal label{font-size:12px;color:#888780;display:block;margin:10px 0 4px}
-.modal input,.modal select{width:100%;padding:9px 10px;border:0.5px solid #d3d1c7;border-radius:8px;font-size:15px;background:#fff;color:#1a1a18;-webkit-appearance:none;appearance:none}
-.modal select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888780' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
-.modal-btns{display:flex;gap:8px;margin-top:16px}
-.modal-btns .btn{flex:1;text-align:center;padding:10px}
-.modal-btns .btn.primary{background:#185fa5;color:#fff;border-color:#185fa5}
-.modal-btns .btn.danger{color:#a32d2d;border-color:#a32d2d}
-.modal-btns .btn.primary:active{background:#0c447c}
-.empty{text-align:center;padding:32px 0;color:#888780;font-size:14px}
+:root{
+  --bg:#f7f6f2;
+  --card:#ffffff;
+  --border:#e2e0d8;
+  --text:#1c1b18;
+  --muted:#888680;
+  --slot:52px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+
+.topbar{position:sticky;top:0;z-index:50;background:var(–bg);padding:12px 16px 8px;border-bottom:0.5px solid var(–border)}
+.day-row{display:flex;align-items:center;gap:0;background:var(–card);border-radius:12px;border:0.5px solid var(–border);overflow:hidden}
+.day-btn{flex:1;padding:8px 2px;font-size:12px;font-weight:500;background:transparent;border:none;cursor:pointer;color:var(–muted);transition:all 0.15s}
+.day-btn.active{background:var(–text);color:#fff;border-radius:10px}
+.day-btn:active{opacity:0.7}
+
+.timeline-wrap{padding:12px 16px 0;position:relative}
+.timeline{position:relative;padding-left:46px}
+.hour-row{height:var(–slot);border-top:0.5px solid var(–border);position:relative;cursor:pointer}
+.hour-row:last-child{border-bottom:0.5px solid var(–border)}
+.hour-row.half{border-top:0.5px dashed #e8e6de}
+.hour-label{position:absolute;left:-46px;top:-9px;font-size:11px;color:var(–muted);width:40px;text-align:right;pointer-events:none}
+.tap-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.1s}
+.hour-row:hover .tap-hint{opacity:1}
+
+.block{position:absolute;left:0;right:0;border-radius:8px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;padding:4px 10px;overflow:hidden;z-index:5}
+.block:active{opacity:0.8}
+.block-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.block-time{font-size:10px;opacity:0.75;white-space:nowrap}
+
+.now-line{position:absolute;left:-46px;right:0;height:2px;background:#e24b4a;z-index:10;pointer-events:none}
+.now-dot{position:absolute;left:0;width:8px;height:8px;border-radius:50%;background:#e24b4a;top:-3px}
+
+.empty-hint{text-align:center;padding:48px 20px;color:var(–muted);font-size:14px;line-height:1.8}
+
+.fab{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom));right:20px;width:56px;height:56px;border-radius:50%;background:var(–text);color:#fff;font-size:28px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.2);z-index:40}
+.fab:active{transform:scale(0.93)}
+
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(–card);border-radius:20px 20px 0 0;padding:0 0 calc(20px + env(safe-area-inset-bottom));width:100%;max-width:480px;max-height:92vh;overflow-y:auto}
+.sheet-handle{width:36px;height:4px;background:var(–border);border-radius:2px;margin:12px auto 0}
+.sheet-title{font-size:17px;font-weight:600;padding:14px 20px 4px}
+.sheet-section{padding:12px 20px 0}
+.sheet-label{font-size:11px;color:var(–muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:500}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cat-opt{padding:10px 12px;border-radius:10px;border:2px solid transparent;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;transition:border-color 0.1s}
+.cat-opt.sel{border-color:rgba(0,0,0,0.25)}
+.cat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.time-row{display:flex;gap:10px}
+.time-field{flex:1}
+.time-field label{font-size:11px;color:var(–muted);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;font-weight:500}
+.time-select{width:100%;padding:11px 10px;border:0.5px solid var(–border);border-radius:10px;font-size:15px;background:var(–card);color:var(–text);-webkit-appearance:none;appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘10’ height=‘6’%3E%3Cpath d=‘M0 0l5 5 5-5’ stroke=’%23888680’ stroke-width=‘1.5’ fill=‘none’/%3E%3C/svg%3E”);background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.label-input{width:100%;padding:11px;border:0.5px solid var(–border);border-radius:10px;font-size:15px;background:var(–card);color:var(–text)}
+.label-input:focus{outline:none;border-color:#aaa}
+.sheet-btns{display:flex;gap:8px;padding:16px 20px 0}
+.sheet-btn{flex:1;padding:13px;border-radius:12px;font-size:15px;font-weight:600;border:none;cursor:pointer}
+.sheet-btn.cancel{background:var(–bg);color:var(–muted)}
+.sheet-btn.save{background:var(–text);color:#fff}
+.sheet-btn.del{background:#fcebeb;color:#a32d2d;flex:0 0 auto;padding:13px 18px}
+.sheet-btn:active{opacity:0.75}
 </style>
+
 </head>
 <body>
-<div class="wrap" id="app"></div>
+
+<div class="topbar">
+  <div class="day-row" id="dayRow"></div>
+</div>
+
+<div class="timeline-wrap">
+  <div class="timeline" id="timeline"></div>
+</div>
+
+<button class="fab" onclick="openSheet(null,null)">+</button>
+
+<div id="sheetRoot"></div>
 
 <script>
 const CATS=[
-  {id:'morning', label:'Morning routine', fill:'#9FE1CB', text:'#085041'},
-  {id:'admin',   label:'Admin / office',  fill:'#B5D4F4', text:'#0C447C'},
-  {id:'bar',     label:'Bar shift',       fill:'#F5C4B3', text:'#712B13'},
-  {id:'marketing',label:'Marketing',      fill:'#CECBF6', text:'#3C3489'},
-  {id:'family',  label:'Family time',     fill:'#FAEEDA', text:'#633806'},
-  {id:'workout', label:'Workout',         fill:'#C0DD97', text:'#27500A'},
-  {id:'errands', label:'Personal / errands',fill:'#D3D1C7', text:'#444441'},
+  {id:'morning',  label:'Morning',    fill:'#9FE1CB', text:'#085041'},
+  {id:'admin',    label:'Admin',      fill:'#B5D4F4', text:'#0C447C'},
+  {id:'bar',      label:'Bar shift',  fill:'#F5C4B3', text:'#712B13'},
+  {id:'marketing',label:'Marketing',  fill:'#CECBF6', text:'#3C3489'},
+  {id:'family',   label:'Family',     fill:'#FAEEDA', text:'#633806'},
+  {id:'workout',  label:'Workout',    fill:'#C0DD97', text:'#27500A'},
+  {id:'errands',  label:'Errands',    fill:'#D3D1C7', text:'#444441'},
 ];
 
 const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const START=7, END=23;
+const TOTAL_SLOTS=(END-START)*2;
+const SLOT_H=52;
 
-let state={
-  day: new Date().getDay(),
-  blocks: JSON.parse(localStorage.getItem('ss_blocks')||'{}'),
-  modal: null,
-  editId: null,
-};
+let activeDay=new Date().getDay();
+let data=JSON.parse(localStorage.getItem('sched_v3')||'{}');
+let sheetState=null;
 
-function save(){try{localStorage.setItem('ss_blocks',JSON.stringify(state.blocks));}catch(e){}}
-function todayKey(){return DAYS[state.day];}
-function getBlocks(){return state.blocks[todayKey()]||[];}
-function setBlocks(arr){state.blocks[todayKey()]=arr;save();}
-
-function nowMinutes(){const n=new Date();return n.getHours()*60+n.getMinutes();}
-
-function parseTH(s){const[hh,mm]=s.split(':');return parseInt(hh)*60+(parseInt(mm)||0);}
-
-function fmtTime(mins){
-  const h=Math.floor(mins/60),m=mins%60;
-  const ampm=h>=12?'pm':'am';
-  const hh=h>12?h-12:h===0?12:h;
-  return m===0?`${hh}${ampm}`:`${hh}:${String(m).padStart(2,'0')}${ampm}`;
+function save(){try{localStorage.setItem('sched_v3',JSON.stringify(data));}catch(e){}}
+function dk(){return DAYS[activeDay];}
+function db(){return data[dk()]||[];}
+function sdb(arr){data[dk()]=arr;save();}
+function s2m(s){return START*60+s*30;}
+function m2s(m){return Math.round((m-START*60)/30);}
+function fmt(m){
+  const h=Math.floor(m/60),mn=m%60,ap=h>=12?'pm':'am';
+  const hh=h>12?h-12:(h===0?12:h);
+  return mn===0?`${hh}${ap}`:`${hh}:${String(mn).padStart(2,'0')}${ap}`;
 }
 
-function render(){
-  const app=document.getElementById('app');
-  const blocks=getBlocks();
-  const pxPerMin=48/60;
-  const today=new Date().getDay();
+function buildOpts(id,sel){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.innerHTML='';
+  for(let s=0;s<=TOTAL_SLOTS;s++){
+    const m=s2m(s);
+    const o=document.createElement('option');
+    o.value=m; o.textContent=fmt(m);
+    if(m===sel)o.selected=true;
+    el.appendChild(o);
+  }
+}
 
-  let nowLine='';
-  const nm=nowMinutes();
-  if(today===state.day && nm>=START*60 && nm<END*60){
-    const top=(nm-START*60)*pxPerMin;
-    nowLine=`<div class="now-line" style="top:${top}px"><div class="now-dot"></div></div>`;
+function renderTabs(){
+  document.getElementById('dayRow').innerHTML=DAYS.map((d,i)=>
+    `<button class="day-btn${i===activeDay?' active':''}" onclick="switchDay(${i})">${d}</button>`
+  ).join('');
+}
+
+function renderTimeline(){
+  const tl=document.getElementById('timeline');
+  const blocks=db();
+  const nm=new Date().getHours()*60+new Date().getMinutes();
+  const isToday=new Date().getDay()===activeDay;
+
+  let rows='';
+  for(let s=0;s<TOTAL_SLOTS;s++){
+    const m=s2m(s);
+    const isHour=m%60===0;
+    const lbl=isHour?(m===720?'12pm':m/60>12?`${m/60-12}pm`:`${m/60}am`):'';
+    rows+=`<div class="hour-row${isHour?'':' half'}" onclick="slotTap(${s})">
+      ${isHour?`<span class="hour-label">${lbl}</span>`:''}
+      <div class="tap-hint"><span style="font-size:16px;color:var(--muted)">+</span></div>
+    </div>`;
   }
 
-  let hours='';
-  for(let h=START;h<END;h++){
-    const label=h===12?'12pm':h>12?`${h-12}pm`:`${h}am`;
-    hours+=`<div class="hour-row"><span class="hour-label">${label}</span></div>`;
-  }
-
-  let blockHtml='';
+  let bhtml='';
   blocks.forEach((b,i)=>{
     const cat=CATS.find(c=>c.id===b.cat)||CATS[0];
-    const top=(b.start-START*60)*pxPerMin;
-    const ht=(b.end-b.start)*pxPerMin;
-    if(ht<4)return;
-    blockHtml+=`<div class="block" style="top:${top}px;height:${ht}px;background:${cat.fill};color:${cat.text}" onclick="editBlock(${i})">
-      <span class="block-label">${b.label||cat.label}</span>
+    const top=m2s(b.start)*SLOT_H;
+    const ht=(b.end-b.start)/30*SLOT_H;
+    if(ht<20)return;
+    bhtml+=`<div class="block" style="top:${top}px;height:${ht}px;background:${cat.fill};color:${cat.text}" onclick="editBlock(event,${i})">
+      <span class="block-name">${b.label||cat.label}</span>
+      ${ht>=SLOT_H?`<span class="block-time">${fmt(b.start)} – ${fmt(b.end)}</span>`:''}
     </div>`;
   });
 
-  const emptyNote=blocks.length===0?`<div class="empty">no blocks yet &mdash; tap + add block</div>`:'';
-
-  const legend=CATS.map(c=>`<div class="leg-item"><div class="leg-dot" style="background:${c.fill}"></div>${c.label}</div>`).join('');
-
-  const isToday=today===state.day;
-  const dayLabel=isToday?`${DAYS[state.day]} &mdash; today`:DAYS[state.day];
-
-  app.innerHTML=`
-    <div class="day-header">
-      <button class="day-nav" onclick="changeDay(-1)">&#8592;</button>
-      <div class="day-label">${dayLabel}</div>
-      <button class="day-nav" onclick="changeDay(1)">&#8594;</button>
-    </div>
-    <div class="legend">${legend}</div>
-    <div class="toolbar">
-      <button class="btn primary" onclick="openAdd()">+ add block</button>
-      <button class="btn" onclick="clearDay()">clear day</button>
-      <button class="btn" onclick="copyDay()">copy to all</button>
-    </div>
-    <div class="timeline" id="tl">
-      ${hours}
-      <div style="position:absolute;top:0;left:0;right:0">
-        ${blockHtml}
-        ${nowLine}
-      </div>
-    </div>
-    ${emptyNote}
-  `;
-
-  if(state.modal) renderModal();
-}
-
-function renderModal(){
-  const isEdit=state.editId!==null;
-  const blocks=getBlocks();
-  const b=isEdit?blocks[state.editId]:{start:START*60,end:START*60+60,cat:'morning',label:''};
-  const sh=String(Math.floor(b.start/60)).padStart(2,'0');
-  const sm=String(b.start%60).padStart(2,'0');
-  const eh=String(Math.floor(b.end/60)).padStart(2,'0');
-  const em=String(b.end%60).padStart(2,'0');
-  const catOpts=CATS.map(c=>`<option value="${c.id}"${c.id===b.cat?' selected':''}>${c.label}</option>`).join('');
-
-  const div=document.createElement('div');
-  div.className='modal-bg';
-  div.id='modal-bg';
-  div.onclick=function(e){if(e.target===div)closeModal();};
-  div.innerHTML=`<div class="modal">
-    <div class="modal-handle"></div>
-    <h3>${isEdit?'edit block':'add block'}</h3>
-    <label>category</label>
-    <select id="m-cat">${catOpts}</select>
-    <label>label (optional)</label>
-    <input id="m-lbl" type="text" value="${b.label||''}" placeholder="custom name" autocomplete="off">
-    <label>start time</label>
-    <input id="m-start" type="time" value="${sh}:${sm}">
-    <label>end time</label>
-    <input id="m-end" type="time" value="${eh}:${em}">
-    <div class="modal-btns">
-      ${isEdit?'<button class="btn danger" onclick="deleteBlock()">delete</button>':''}
-      <button class="btn" onclick="closeModal()">cancel</button>
-      <button class="btn primary" onclick="saveBlock()">save</button>
-    </div>
-  </div>`;
-  document.getElementById('app').appendChild(div);
-}
-
-function openAdd(){state.modal=true;state.editId=null;render();}
-function editBlock(i){state.modal=true;state.editId=i;render();}
-function closeModal(){state.modal=null;state.editId=null;render();}
-
-function saveBlock(){
-  const cat=document.getElementById('m-cat').value;
-  const lbl=document.getElementById('m-lbl').value.trim();
-  const start=parseTH(document.getElementById('m-start').value);
-  const end=parseTH(document.getElementById('m-end').value);
-  if(end<=start){alert('End time must be after start time.');return;}
-  const arr=getBlocks();
-  const entry={cat,label:lbl,start,end};
-  if(state.editId!==null){arr[state.editId]=entry;}
-  else{arr.push(entry);}
-  setBlocks(arr);
-  closeModal();
-}
-
-function deleteBlock(){
-  if(!confirm('Delete this block?'))return;
-  const arr=getBlocks();
-  arr.splice(state.editId,1);
-  setBlocks(arr);
-  closeModal();
-}
-
-function clearDay(){
-  if(confirm('Clear all blocks for '+DAYS[state.day]+'?')){setBlocks([]);render();}
-}
-
-function copyDay(){
-  const arr=getBlocks();
-  if(!arr.length){alert('No blocks to copy.');return;}
-  if(confirm('Copy '+DAYS[state.day]+"'s blocks to all other days?")){
-    DAYS.forEach(d=>{if(d!==todayKey())state.blocks[d]=arr.map(b=>({...b}));});
-    save();render();
+  let nowhtml='';
+  if(isToday && nm>=START*60 && nm<END*60){
+    const top=(nm-START*60)/30*SLOT_H;
+    nowhtml=`<div class="now-line" style="top:${top}px"><div class="now-dot"></div></div>`;
   }
+
+  const empty=blocks.length===0?`<div class="empty-hint">Tap any time slot<br>or + to add a block</div>`:'';
+
+  tl.innerHTML=`${rows}<div style="position:absolute;top:0;left:0;right:0;pointer-events:none">${bhtml}${nowhtml}</div>${empty}`;
+  tl.querySelectorAll('.block').forEach(el=>el.style.pointerEvents='all');
 }
 
-function changeDay(d){state.day=(state.day+d+7)%7;render();}
+function render(){renderTabs();renderTimeline();}
+function switchDay(i){activeDay=i;render();}
+
+function slotTap(slot){openSheet(null,slot);}
+function editBlock(e,i){e.stopPropagation();openSheet(i,null);}
+
+function openSheet(editIdx,slot){
+  sheetState={editIdx,slot};
+  const blocks=db();
+  const isEdit=editIdx!==null;
+  const ex=isEdit?blocks[editIdx]:null;
+
+  let ds=START*60+60, de=START*60+120;
+  if(slot!==null){ds=s2m(slot);de=Math.min(s2m(slot+2),END*60);}
+  const b=ex||{start:ds,end:de,cat:'morning',label:''};
+  sheetState.cat=b.cat;
+
+  const cg=CATS.map(c=>`
+    <div class="cat-opt${c.id===b.cat?' sel':''}" id="co_${c.id}" style="color:${c.text};background:${c.fill}" onclick="pickCat('${c.id}')">
+      <div class="cat-dot" style="background:${c.text}"></div>${c.label}
+    </div>`).join('');
+
+  document.getElementById('sheetRoot').innerHTML=`
+    <div class="sheet-bg" id="sbg" onclick="bgClose(event)">
+      <div class="sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-title">${isEdit?'Edit block':'New block'}</div>
+        <div class="sheet-section">
+          <div class="sheet-label">Category</div>
+          <div class="cat-grid">${cg}</div>
+        </div>
+        <div class="sheet-section">
+          <div class="sheet-label">Custom label (optional)</div>
+          <input class="label-input" id="m_lbl" type="text" value="${b.label||''}" placeholder="e.g. open bar, meal prep…" autocomplete="off">
+        </div>
+        <div class="sheet-section">
+          <div class="time-row">
+            <div class="time-field"><label>Start</label><select class="time-select" id="m_start"></select></div>
+            <div class="time-field"><label>End</label><select class="time-select" id="m_end"></select></div>
+          </div>
+        </div>
+        <div class="sheet-btns">
+          ${isEdit?'<button class="sheet-btn del" onclick="doDelete()">Delete</button>':''}
+          <button class="sheet-btn cancel" onclick="closeSheet()">Cancel</button>
+          <button class="sheet-btn save" onclick="doSave()">Save</button>
+        </div>
+      </div>
+    </div>`;
+
+  buildOpts('m_start',b.start);
+  buildOpts('m_end',b.end);
+}
+
+function pickCat(id){
+  sheetState.cat=id;
+  document.querySelectorAll('.cat-opt').forEach(el=>el.classList.toggle('sel',el.id==='co_'+id));
+}
+
+function bgClose(e){if(e.target.id==='sbg')closeSheet();}
+
+function closeSheet(){
+  sheetState=null;
+  document.getElementById('sheetRoot').innerHTML='';
+  render();
+}
+
+function doSave(){
+  const start=parseInt(document.getElementById('m_start').value);
+  const end=parseInt(document.getElementById('m_end').value);
+  const lbl=document.getElementById('m_lbl').value.trim();
+  const cat=sheetState.cat||'morning';
+
+  if(end<=start){alert('End time must be after start time.');return;}
+
+  const blocks=db();
+  const isEdit=sheetState.editIdx!==null;
+
+  for(let i=0;i<blocks.length;i++){
+    if(isEdit && i===sheetState.editIdx)continue;
+    if(start<blocks[i].end && end>blocks[i].start){
+      const name=blocks[i].label||(CATS.find(c=>c.id===blocks[i].cat)||{label:'another block'}).label;
+      alert(`Overlaps with "${name}". Adjust your times.`);
+      return;
+    }
+  }
+
+  const entry={cat,label:lbl,start,end};
+  if(isEdit){blocks[sheetState.editIdx]=entry;}
+  else{blocks.push(entry);blocks.sort((a,b)=>a.start-b.start);}
+  sdb(blocks);
+  closeSheet();
+}
+
+function doDelete(){
+  if(!confirm('Delete this block?'))return;
+  const blocks=db();
+  blocks.splice(sheetState.editIdx,1);
+  sdb(blocks);
+  closeSheet();
+}
 
 render();
-setInterval(()=>{if(!state.modal)render();},60000);
+setInterval(()=>{if(!sheetState)renderTimeline();},60000);
 </script>
 
 </body>
